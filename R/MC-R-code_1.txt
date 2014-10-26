@@ -1,0 +1,833 @@
+OGR2OGR-asennus
+***************
+
+1. ogr2ogr-asennus
+https://sites.google.com/site/eospansite/installinggdalonmacosx
+(4 pakettia asennettava, huomaa jÃ¤rjestys)
+
+2.avaa Terminal, komenna
+export PATH=/Library/Frameworks/GDAL.framework/Programs:$PATH
+
+3. Mene kansioon, jossa muunnettava MapInfo-muotoinen .TAB-tiedosto sijaitsee
+ja anna komento
+ogr2ogr -skipfailures -f "ESRI Shapefile" rakennukset.shp rakennukset_Helsinki_06_2012_wgs84.TAB
+
+4. Tiedostoon /Users/userA/Desktop/rakennukset_Helsinki_06_2012/rakennukset_Helsinki_wgs84/ muodostuu 3 ESRI Shapefilea
+
+5. ESRI -muotoiset tiedostot (http://trac.osgeo.org/gdal/wiki/UserDocs/Shapefiles) voi suoraan lukea R:ään (http://cran.r-project.org/bin/macosx/) analyysiä varten kun oikeat paketit on ensin asennettu:
+(ohjeet: http://www.nceas.ucsb.edu/scicomp/usecases/ReadWriteESRIShapeFiles )
+
+6. Asenna R:ää varten rgdal-pakkaus (
+https://sites.google.com/site/eospansite/rspatial_gis/rgdalmac)
+tai hae vain CRANista rgdal-pakkaus, pura se. Sitten TERMINAL-ikkunassa
+siirry hakemistoon jossa rgdal-hakemisto sijaitsee (eli /Users/userA/Downloads) ja komenna
+R CMD INSTALL --configure-args="" rgdal_0.8-14.tgz 
+missä rgdal_0.8-14.tgz haetun paketin nimi 
+Vaihtoehtoisesti käynnistä R ja kirjoita komentoriville
+install.packages("rgdal") (tällöin myös sp-paketin riippuvuudet generoidaan
+automaattisesti)
+
+Komenna R:ssä
+> test <- readOGR("/Users/userA/Desktop/rakennukset_Helsinki_06_2012/rakennukset_Helsinki_wgs84", "rakennukset")
+
+Tulostaa:
+OGR data source with driver: ESRI Shapefile 
+Source: "/Users/userA/Desktop/rakennukset_Helsinki_06_2012/rakennukset_Helsinki_wgs84", layer: "rakennukset"
+with 53321 features and 113 fields
+Feature type: wkbPolygon with 2 dimensions
+
+Komenna
+> print(proj4string(test))
+[1] "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+
+Plottauksen voi suorittaa komentamalla
+> plot(test, axes=TRUE, border="gray")
+
+091-001-9901-0100     Pohjoisranta 21 00170 HELSINKI     144.64
+1 091-001-9901-0100 Siltavuorenranta 16 00170 HELSINKI     196.77
+2 091-001-9901-0100    Liisanpuistikko  00170 HELSINKI      41.75
+3 091-001-9903-0100    Liisanpuistikko  00170 HELSINKI      22.00
+4 091-001-0001-0004  Aleksanterinkatu 3 00170 HELSINKI    5834.50
+5 091-001-0002-0001       Kirkkokatu 14 00170 HELSINKI    1017.65
+6 091-001-0002-0004       Kirkkokatu 12 00170 HELSINKI    1602.39
+7 091-001-0002-0004        Ritarikatu 6 00170 HELSINKI     904.92
+8 091-001-0002-0005    Snellmaninkatu 3 00170 HELSINKI    1519.53
+9 091-001-0002-0005    Snellmaninkatu 3 00170 HELSINKI     414.11
+091-001-0002-0005    Snellmaninkatu 3 00170 HELSINKI     414.11
+10 091-001-0003-0005       Mariankatu 10 00170 HELSINKI     498.06
+11 091-001-0003-0005       Kirkkokatu 10 00170 HELSINKI     559.19
+12 091-001-0003-0008      Hallituskatu 1 00170 HELSINKI     717.82
+13 091-001-0003-0009       Ritarikatu 3b 00170 HELSINKI    1025.35
+14 091-001-0004-0001  Pohjoisesplanadi 7 00170 HELSINKI    1410.86
+15 091-001-0004-0002 Aleksanterinkatu 12 00170 HELSINKI     918.66
+16 091-001-0004-0004  Pohjoisesplanadi 5 00170 HELSINKI     714.18
+17 091-001-0004-0009    Katariinankatu 1 00100 HELSINKI    3167.24
+18 091-001-0005-0001        Mariankatu 2 00170 HELSINKI    1812.09
+19 091-001-0005-0008  Pohjoisesplanadi 3 00170 HELSINKI    1707.55
+19 091-001-0005-0008    Pohjoisesplanadi 3 00170 HELSINKI    1707.55
+20 091-001-0005-0009 Aleksanterinkatu 4-10 00170 HELSINKI    3497.48
+21 091-001-0006-0001          Mariankatu 1 00170 HELSINKI     799.82
+22 091-001-0006-0001          Mariankatu 1 00170 HELSINKI     943.10
+23 091-001-0007-0001    Aleksanterinkatu 1 00170 HELSINKI     787.73
+24 091-001-0007-0001          Mariankatu 3 00170 HELSINKI     353.75
+25 091-001-0007-0002      Meritullinkatu 6 00170 HELSINKI    1095.30
+26 091-001-0007-0004      Meritullintori 3 00170 HELSINKI     964.60
+27 091-001-0007-0008          Mariankatu 9 00170 HELSINKI     921.33
+28 091-001-0007-0016          Mariankatu 7 00170 HELSINKI     758.88
+29 091-001-0007-0016          Mariankatu 5 00170 HELSINKI     364.04
+29 091-001-0007-0016     Mariankatu 5 00170 HELSINKI     364.04
+30 091-001-0007-0015 Meritullintori 6 00170 HELSINKI     329.33
+31 091-001-0007-0016 Meritullintori 6 00170 HELSINKI      94.05
+32 091-001-0007-0013     Kirkkokatu 6 00170 HELSINKI     604.50
+33 091-001-0007-0013    Mariankatu 11 00170 HELSINKI     701.07
+34 091-001-0007-0013     Kirkkokatu 4 00170 HELSINKI    1730.09
+35 091-001-0008-0001                            <NA>    1374.82
+36 091-001-0008-0001 Meritullinkatu 1 00170 HELSINKI     360.59
+37 091-001-0008-0001 Meritullinkatu 1 00170 HELSINKI     256.46
+38 091-001-0008-0009 Meritullinkatu 3 00170 HELSINKI    1968.44
+39 091-001-0009-0001    Rauhankatu 2a 00170 HELSINKI    1337.39
+
+
+
+Esimerkkialueita
+****************
+
+apu <- test[1800:2000,1:5]
+> plot(apu, axes=TRUE, border="gray") (Hakaniemi)
+
+apu <- test[150:300,1:5]
+> plot(apu, axes=TRUE, border="gray")
+(Siltavuorenpenger)
+
+
+ 
+Tiivistetyt ohjeet
+******************
+
+1. Asenna rgdal-pakkaus komentamalla
+> install.packages("rgdal") (ja valitse mirror-saitti listasta)
+2. komenna
+> library(rgdal)
+3. komenna
+> rakennukset <- readOGR("/Users/userA/Desktop/rakennukset_Helsinki_06_2012/rakennukset_Helsinki_wgs84", "rakennukset")
+4. Valitse esim. Siltavuorenpenkereen puolen rakennukset:
+> apu <- rakennukset[150:300,1:5]
+5.Plottaa komentamalla
+plot(apu, axes=TRUE, border="gray")
+6. Haetaan joko kartasta tai tiedostosta rakennukset_Helsinki_06_2012.csv
+lista kadunnimistä sekä kiinteistöjen tunnusnumerot.
+
+
+
+ESRI ShapeFilen rakenne R:aan sisäänluettuna
+********************************************
+
+Slot "data": Kiinteisto
+"nro1" "kiint.tunnus1"
+"nro2" "kiint.tunnus2"
+...
+Slot "polygons":
+[[1]]
+An object of class "Polygons"
+Slot "Polygons":
+[[1]]
+An object of class "Polygon"
+Slot "labpt":
+[1] 24.95561 60.17433
+Slot "area":
+[1] 1.003065e-07
+Slot "hole":
+[1] FALSE
+Slot "ringDir":
+[1] 1
+Slot "coords":
+          [,1]     [,2]
+ [1,] 24.95590 60.17425
+...
+Slot "plotOrder":
+[1] 1
+Slot "labpt":
+[1] 24.95561 60.17433
+Slot "ID":
+[1] "149"
+Slot "area":
+[1] 1.003065e-07
+
+Slot "plotOrder":
+[1] 1
+Slot "bbox":
+       min      max
+x 24.95535 24.95590
+y 60.17422 60.17447
+Slot "proj4string":
+CRS arguments:
+ +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 
+
+
+> typeof(apu)
+[1] "S4"
+
+> slotNames(apu)
+[1] "data"        "polygons"    "plotOrder"   "bbox"        "proj4string"
+
+> typeof(apu@polygons)
+[1] "list"
+
+Ts. apu@polygons on lista-tyypin muuttuja ja apu itsessÃ¤Ã¤n on luokan S4
+luokkaobjekti
+
+> str(apu)
+Antaa luokkarakenteen
+
+Komenna (vrt. http://www.snip2code.com/Snippet/5041/Working-with-attributes-inside-SpatialPo)
+> slotNames(apu@polygons[[1]])
+[1] "Polygons"  "plotOrder" "labpt"     "ID"        "area"     
+
+> str(apu@polygons[[1]]@Polygons)
+List of 1
+ $ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. ..@ labpt  : num [1:2] 25 60.2
+  .. ..@ area   : num 1e-07
+  .. ..@ hole   : logi FALSE
+  .. ..@ ringDir: int 1
+  .. ..@ coords : num [1:36, 1:2] 25 25 25 25 25 ...
+
+Koordinaatit saadaan komentamalla
+> apu@polygons[[1]]@Polygons[[1]]@coords
+          [,1]     [,2]
+ [1,] 24.95590 60.17425
+ [2,] 24.95581 60.17424
+      ....
+
+Määritellään kahden polygonin pituinen objekti:
+> apu <- rakennukset[150:151,1:1]
+Komento
+> apu@polygons[1:2]
+tulostaa polygoniosat muun objekti-rakenteen lisäksi. Lisäsiistintaa siis
+tarvitaan:
+> str(apu@polygons[1:2])
+List of 2...
+
+Otetaan käyttöön apumuuttuja a2 (kahden mittainen lista S4-luokan objekteista)
+> a2 <- apu@polygons
+Luodaan lista b2 imemÃ¤llÃ¤ a2-koordinaattiosa erikseen:
+> b2 <- list(1:length(a2))
+> for (i in 1:length(a2)) {b2[[i]] <- apu@polygons[[i]]@Polygons[[1]]@coords}
+
+Siltavuorenpenkereen rakennusten pohjat virittävät vektorit saadaan
+siis ao. rimpsun avulla
+> apu <- rakennukset[150:300,1:1]
+> a2 <- apu@polygons
+> b2 <- list(1:length(a2))
+> for (i in 1:length(a2)) {b2[[i]] <- apu@polygons[[i]]@Polygons[[1]]@coords}
+> b2
+> str(b2[[1]])
+ num [1:36, 1:2] 25 25 25 25 25 ...
+> typeof(b2[[1]])
+[1] "double"
+> dim(b2[[1]])
+[1] 36  2
+(This means that once we have formed the list of polygons, the elements
+of the list can be referenced as normal 2D tables!)
+
+
+Unit conversions
+****************
+
+For unit conversions of ESRI shape files, see
+http://forums.esri.com/Thread.asp?c=9&f=85&t=1500
+(necessary parameters are given in the .prj file)
+Mercator-projection:
+http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system
+http://kartoweb.itc.nl/geometrics/Map%20projections/mappro.html
+
+
+Drawing polygons with R
+***********************
+
+x <- c(1:9, 8:1)
+> y <- c(1, 2*(5:3), 2, -1, 17, 9, 8, 2:9)
+>   plot(1:10, main = paste("xpd =", NA))
+>   polygon(x, y, xpd, col = "orange", lty = 2, lwd = 2, border = "red")
+Vectors x and y contain the vertices of the polygon.
+
+
+Asteet muutettava radiaaneiksi Mercator-projektiossa:
+> 6371000*log(tan(pi/4 + 0.5*b2[[1]][,2]*pi/180))
+> 6371000*b2[[1]][,1]*pi/180
+Kaavat pallolle (ks. http://kartoweb.itc.nl/geometrics/Map%20projections/mappro.html)
+
+> for (i in 1:length(apu)) {c2[[i]][,1] <- 6371000*b2[[i]][,1]*pi/180
++  c2[[i]][,2] <- 6371000*log(tan(pi/4 + 0.5*b2[[i]][,2]*pi/180))
++ }
+
+for (i in 1:length(apu)) {x <- c2[[i]][,1]
+y <- c2[[i]][,2]
+plot(1:100, main = paste("xpd =", NA))
+polygon(x, y, xpd, col = "orange", lty = 2, lwd = 2, border = "red")
+}
+
+This produces all individual polygons but not the combination:
+> for (i in 1:1) {x <- (c2[[i]][,1] + (8429248-2774969))/max(c2[[i]][,1]+(8429248-2774969))
+y <- c2[[i]][,2]/max(c2[[i]][,2])
+plot(1,1, xlab="x axis", ylab="y axis", main="my plot", xlim=c(0.99990,1.00001), ylim=c(0.99990,1.00001), pch=15, col="blue")
+polygon(x, y, xpd=NA, col = "orange", lty = 2, lwd = 2, border = "red")
+}
+
+Try not erasing the previous plots:
+> plot(1,1, xlab="x axis", ylab="y axis", main="my plot", xlim=c(0.99990,1.00001), ylim=c(0.99990,1.00001), pch=15, col="blue")
+> for (i in 1:length(apu)) {x <- (c2[[i]][,1] + (8429248-2774969))/max(c2[[i]][,1]+(8429248-2774969))
++ y <- c2[[i]][,2]/max(c2[[i]][,2])
++ polygon(x, y, xpd=NA, lty = 2, lwd = 2, border = "red")
++ }
+
+The problem with the form above is that all polygons are rendered almost
+on top of each other. We need to transform the coordinate system more carefully.
+To get minima and maxima, use
+print("X-koordinaatit rakennuksittain: min, max"); for (i in 1:length(apu)) {print(i); a <- min(c2[[i]][,1]); b <- max(c2[[i]][,1]); print(a); print(b)}
+print("Y-koordinaatit rakennuksittain: min, max"); for (i in 1:length(apu)) {print(i); a <- min(c2[[i]][,2]); b <- max(c2[[i]][,2]); print(a); print(b)}
+
+
+Esimerkki rakennusten sisäosien esityksestä
+*******************************************
+
+Sisäpihaa lukuunottamatta ao. antaa tarkan esityksen kolmesta korttelista
+(rakennuksesta 150-152):
+> plot(8429248,2774923, xlab="x axis", ylab="y axis", main="my plot", ylim=c(8429160,8429300), xlim=c(2774650,2774980), pch=15, col="blue")
+for (i in 1:length(apu)) {x <- c2[[i]][,1]; y <- c2[[i]][,2];
+polygon(x, y, xpd=NA, lty = 2, lwd = 2, border = "red")
+}
+
+Eli koostettuna plottaus:
+> apu <- rakennukset[150:152,1:1]
+> plot(apu, axes=TRUE, border="gray")
+
+
+> rakennukset <- readOGR("/Users/userA/Desktop/rakennukset_Helsinki_06_2012/rakennukset_Helsinki_wgs84", "rakennukset")
+apu <- rakennukset[150:152,1:1]
+a2 <- apu@polygons
+b2 <- list(1:length(a2))
+for (i in 1:length(a2)) {b2[[i]] <- apu@polygons[[i]]@Polygons[[1]]@coords}
+Polygons-lista voi olla pidempi kuin yhdestä alkiosta koostuva.
+Koska yllä on merkitty Polygons[[1]] (apu@polygons[[i]]@Polygons[[1]]@coords)
+saadaan talteen vain 'uloin' rakennuksen seinä eikä esim. sisäpihoja ja
+sisäseinia tämän esimerkin tapauksessa. Sisäpihoja varten täytyy siis rakentaa
+luuppi. Jätämme tämän myöhemmäksi, nyt generoimme pistepilven vektoreiden sijaan
+
+length(c2) = # number of buildings (rather, polygons)
+veclen = dim(c2[[i]])[1]
+(muuttuja kertoo, paljonko pisteitä polygonissa kaiken kaikkiaan,
+huom: dim(c2[[i]])[2] = 2 aina, koska polygonin
+tiedot on talletettu 'taulukkoon' muotoon
+((x1, y1)
+(x2, y2)
+...
+(xVeclen, yVeclen)) .)
+
+
+Koostettuna koordinaatistomuunnoksen jälkeinen plottaus
+> rakennukset <- readOGR("/Users/userA/Desktop/rakennukset_Helsinki_06_2012/rakennukset_Helsinki_wgs84", "rakennukset")
+apu <- rakennukset[150:152,1:1]
+a2 <- apu@polygons
+b2 <- list(1:length(a2))
+for (i in 1:length(a2)) {b2[[i]] <- apu@polygons[[i]]@Polygons[[1]]@coords}
+c2 <- b2
+for (i in 1:length(apu)) {c2[[i]][,1] <- 6371000*b2[[i]][,1]*pi/180
++  c2[[i]][,2] <- 6371000*log(tan(pi/4 + 0.5*b2[[i]][,2]*pi/180))
++ }
+inipx <- c2[[1]][1,1]; inipy <- c2[[1]][1,2]
+plot(inipx, inipy, xlab="x axis", ylab="y axis", main="my plot", ylim=c(8429160,8429300), xlim=c(2774650,2774980), pch=15, col="blue")
+for (i in 1:length(apu)) {x <- c2[[i]][,1]; y <- c2[[i]][,2];
+polygon(x, y, xpd=NA, lty = 2, lwd = 2, border = "red")
+}
+
+Here we have determined the 'initialization point' (inipx, inipy) which needs
+to be provided in the first plot-command line so that there is something to
+be plotted. After that, the polygons are appended to the picture using the
+for loop.
+
+Further improvement (calculation of xmax and xmin has been separated):
+> lentot <- 0; for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; lentot <- lentot + veclen }; xcom <- c(1:lentot); ycom <- c(1:lentot); s <- 1; for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:veclen) { xcom[[s]] <- c2[[i]][j,1]; ycom[[s]] <- c2[[i]][j,2]; s <- s+1} }; xmin <- min(xcom)-5; xmax <- max(xcom)+5; ymin <- min(ycom)-5; ymax <- max(ycom)+5
+
+
+
+Yhteenveto edellä suoritetuista r-komennoista, KOKO KETJU:
+**********************************************************
+
+> library(rgdal)
+rakennukset <- readOGR("/Users/userA/Desktop/rakennukset_Helsinki_06_2012/rakennukset_Helsinki_wgs84", "rakennukset")
+apu <- rakennukset[150:152,1:1]
+a2 <- apu@polygons
+b2 <- list(1:length(a2))
+for (i in 1:length(a2)) {b2[[i]] <- apu@polygons[[i]]@Polygons[[1]]@coords}
+c2 <- b2
+for (i in 1:length(apu)) {c2[[i]][,1] <- 6371000*b2[[i]][,1]*pi/180
+c2[[i]][,2] <- 6371000*log(tan(pi/4 + 0.5*b2[[i]][,2]*pi/180))
+}
+lentot <- 0; for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; lentot <- lentot + veclen }; xcom <- c(1:lentot); ycom <- c(1:lentot); s <- 1; for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:veclen) { xcom[[s]] <- c2[[i]][j,1]; ycom[[s]] <- c2[[i]][j,2]; s <- s+1} }; xmin <- min(xcom)-5; xmax <- max(xcom)+5; ymin <- min(ycom)-5; ymax <- max(ycom)+5
+inipx <- c2[[1]][1,1]; inipy <- c2[[1]][1,2]
+plot(inipx, inipy, xlab="x axis", ylab="y axis", main="my plot", xlim=c(xmin,xmax), ylim=c(ymin,ymax), pch=15, col="blue")
+for (i in 1:length(apu)) {x <- c2[[i]][,1]; y <- c2[[i]][,2];
+polygon(x, y, xpd=NA, lty = 2, lwd = 2, border = "red")
+}
+
+
+Seuraava koodinpÃ¤tkÃ¤ tulostaa tarvittavien vÃ¤lipisteiden lukumÃ¤Ã¤rÃ¤n kahden
+vektorin vÃ¤lillÃ¤ (nyrkkisÃ¤Ã¤ntÃ¶nÃ¤ on ettÃ¤ pisteitÃ¤ lisÃ¤tÃ¤Ã¤n noin puolen metrin
+vÃ¤lein mikÃ¤ aiheuttaa tekijÃ¤n 2* ilmaantumisen ao. kaavassa.)
+> for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:(veclen-1)) {npoints <- 2*floor(sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2)) + 1; print(npoints)} }
+
+
+Ao .kaava on kuten yllÃ¤ mutta pituuden laskenta on erotettu omaksi toimen-
+piteekseen ja lisÃ¤ksi mÃ¤Ã¤ritetÃ¤Ã¤n siirtymÃ¤yksikkÃ¶vektori x- ja y-komponentit
+(uvecx, uvecy):
+> for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:(veclen-1)) {ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2); npoints <- 2*floor(ulength)+1; uvecx <- (c2[[i]][j,1] - c2[[i]][j+1,1])/ulength; uvecy <- (c2[[i]][j,2] - c2[[i]][j+1,2])/ulength; print(npoints)}}
+
+Maaritetaan uusi lista, joka koostuu tÃ¤ydennetyistÃ¤ vektoreista (vÃ¤lipisteet
+lisÃ¤tty, npoints kpl jokaisen kahden verteksin vÃ¤liin)
+HUOM! Komponentit listassa ovat matriiseja:
+> is.matrix(d2[[3]])
+[1] TRUE
+
+TÃ¤ssÃ¤ siis vektori, joka kertoo montako pistettÃ¤ tÃ¤ytyy kahden annetun
+pisteen vÃ¤liin lisÃ¤tÃ¤, jotta koko niiden vÃ¤linen jana tulisi tÃ¤ytettyÃ¤
+halutulla pistetiheydellÃ¤:
+
+> s <- 1; d2 <- c2; pcount <- 0*c(1:(lentot-length(c2))); for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:(veclen-1)) {ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2); npoints <- 2*floor(ulength)+1; uvecx <- (c2[[i]][j,1] - c2[[i]][j+1,1])/ulength; uvecy <- (c2[[i]][j,2] - c2[[i]][j+1,2])/ulength; pcount[[s]] <- npoints; s <- s+1 } }; pcount
+
+
+
+
+
+
+
+
+
+R-code summarizin the steps above
+*********************************
+
+
+>s <- 1
+d2 <- c2
+pcount <- 0*c(1:(lentot-length(c2)))
+for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]
+    for (j in 1:(veclen-1)) { 
+    	ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2)
+	npoints <- 2*floor(ulength)+1
+	uvecx <- (c2[[i]][j,1] - c2[[i]][j+1,1])/ulength
+	uvecy <- (c2[[i]][j,2] - c2[[i]][j+1,2])/ulength
+    	pcount[[s]] <- npoints
+	s <- s+1
+	apumatrix <- matrix(0,npoints+1,2)
+		  for (v in 0:npoints) {
+		      apumatrix[v+1,1] <- c2[[i]][j,1] + v*uvecx/(npoints+1)
+		      apumatrix[v+1,2] <- c2[[i]][j,2] + v*uvecy/(npoints+1)
+		      		       }
+		      d2[[j]] <- apumatrix
+		      	      } }
+
+Definitions:
+> n <- sum(pcount+lentot); d2 <- matrix(0,n,2); s <-1; for (i in 1:dim(c2[[1]])[1]) {d2[[i,1]] <- 1}
+
+Note:
+> s <- 1; pcount <- 0*c(1:(lentot-length(c2))); for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:(veclen-1)) {ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2); npoints <- 2*floor(ulength) + 1; pcount[[s]] <- npoints; s <- s+1 } }; pcount
+
+The expression above gives the correct number of pcount and we can use
+it to define the variable n = sum(pcount)+lentot below:
+
+s <- 1; pcount <- 0*c(1:(lentot-length(c2))); for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:(veclen-1)) {ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2); npoints <- 2*floor(ulength) + 1; pcount[[s]] <- npoints; s <- s+1 } }
+# n <- sum(pcount) + lentot
+# d2 <- matrix(0,n,2)
+s <- 1
+up <- 2*(lentot-length(c2))
+d2 <- list(1:up)
+for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]
+    for (j in 1:(veclen-1)) { 
+    	ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2)
+	npoints <- 2*floor(ulength)+1
+	uvecx <- (c2[[i]][j,1] - c2[[i]][j+1,1])
+	uvecy <- (c2[[i]][j,2] - c2[[i]][j+1,2])
+	apumatrix <- matrix(0,npoints+1,2)
+		  for (v in 0:npoints) {
+		      apumatrix[v+1,1] <- c2[[i]][j,1] + v*uvecx/(npoints+1)
+		      apumatrix[v+1,2] <- c2[[i]][j,2] + v*uvecy/(npoints+1)
+		      		       }
+		      d2[[s]] <- apumatrix
+		      s <- s+1
+		      d2[[s]] <- matrix((c2[[i]][j,1] + uvecx),(c2[[i]][j,2] + uvecy),nrow=1,ncol=2)
+		      s <- s+1
+		      	      } }
+
+Summary (leaving out the unnecessary parts of the above):
+
+s <- 1
+up <- 2*(lentot-length(c2))
+d2 <- list(1:up)
+for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]
+    for (j in 1:(veclen-1)) { 
+    	ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2)
+	npoints <- 2*floor(ulength)+1
+	uvecx <- (c2[[i]][j,1] - c2[[i]][j+1,1])
+	uvecy <- (c2[[i]][j,2] - c2[[i]][j+1,2])
+	apumatrix <- matrix(0,npoints+1,2)
+		  for (v in 0:npoints) {
+		      apumatrix[v+1,1] <- c2[[i]][j,1] + v*uvecx/(npoints+1)
+		      apumatrix[v+1,2] <- c2[[i]][j,2] + v*uvecy/(npoints+1)
+		      		       }
+		      d2[[s]] <- apumatrix
+		      s <- s+1
+		      d2[[s]] <- matrix((c2[[i]][j,1] + uvecx),(c2[[i]][j,2] + uvecy),nrow=1,ncol=2)
+		      s <- s+1
+} }
+#
+s <- 1; pcount <- 0*c(1:(lentot-length(c2))); for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:(veclen-1)) {ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2); npoints <- 2*floor(ulength) + 1; pcount[[s]] <- npoints; s <- s+1 } }
+#
+n <- sum(pcount+1) + (lentot-length(c2))
+s <- 1
+allpoints <- matrix(0,n,2)
+for (i in 1:length(d2)) { 
+    for (j in 1:dim(d2[[i]])[1]) { 
+    	allpoints[s,1] <- d2[[i]][j,1]
+    	allpoints[s,2] <- d2[[i]][j,2]
+	s <- s+1
+} }
+
+
+
+Summary of all steps above
+**************************
+(Note: direction of unit vector changed)
+
+> library(rgdal)
+rakennukset <- readOGR("/Users/userA/Desktop/rakennukset_Helsinki_06_2012/rakennukset_Helsinki_wgs84", "rakennukset")
+apu <- rakennukset[150:152,1:1]
+a2 <- apu@polygons
+b2 <- list(1:length(a2))
+for (i in 1:length(a2)) {b2[[i]] <- apu@polygons[[i]]@Polygons[[1]]@coords}
+c2 <- b2
+for (i in 1:length(apu)) {c2[[i]][,1] <- 6371000*b2[[i]][,1]*pi/180
+c2[[i]][,2] <- 6371000*log(tan(pi/4 + 0.5*b2[[i]][,2]*pi/180))
+}
+lentot <- 0; for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; lentot <- lentot + veclen }; xcom <- c(1:lentot); ycom <- c(1:lentot); s <- 1; for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:veclen) { xcom[[s]] <- c2[[i]][j,1]; ycom[[s]] <- c2[[i]][j,2]; s <- s+1} }; xmin <- min(xcom)-5; xmax <- max(xcom)+5; ymin <- min(ycom)-5; ymax <- max(ycom)+5
+inipx <- c2[[1]][1,1]; inipy <- c2[[1]][1,2]
+plot(inipx, inipy, xlab="x axis", ylab="y axis", main="my plot", xlim=c(xmin,xmax), ylim=c(ymin,ymax), pch=15, col="blue"); plot(allpoints[,1], allpoints[,2], xlab="x axis", ylab="y axis", main="my plot", xlim=c(xmin,xmax), ylim=c(ymin,ymax), pch=15, col="green")
+for (i in 1:length(apu)) {x <- c2[[i]][,1]; y <- c2[[i]][,2];
+polygon(x, y, xpd=NA, lty = 2, lwd = 2, border = "red")
+}
+#
+#
+# NOTE: direction of unit vector changed
+#
+#
+s <- 1
+up <- 2*(lentot-length(c2)) # the length is double because the final
+                            # coordinate point of each polygon is added
+			    # separately as a single point
+d2 <- list(1:up)
+for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]
+    for (j in 1:(veclen-1)) { 
+    	ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2)
+	npoints <- 2*floor(ulength)+1
+	uvecx <- (c2[[i]][j,1] - c2[[i]][j+1,1])
+	uvecy <- (c2[[i]][j,2] - c2[[i]][j+1,2])
+	apumatrix <- matrix(0,npoints+1,2)
+		  for (v in 0:npoints) {
+		      apumatrix[v+1,1] <- c2[[i]][j,1] - v*uvecx/(npoints+1)
+		      apumatrix[v+1,2] <- c2[[i]][j,2] - v*uvecy/(npoints+1)
+		      		       }
+		      d2[[s]] <- apumatrix
+		      s <- s+1
+		      d2[[s]] <- matrix((c2[[i]][j,1] + uvecx),(c2[[i]][j,2] + uvecy),nrow=1,ncol=2)
+		      s <- s+1
+} }
+#
+s <- 1; pcount <- 0*c(1:(lentot-length(c2))); for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:(veclen-1)) {ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2); npoints <- 2*floor(ulength) + 1; pcount[[s]] <- npoints; s <- s+1 } }
+#
+n <- sum(pcount+1) + (lentot-length(c2))
+s <- 1
+allpoints <- matrix(0,n,2)
+for (i in 1:length(d2)) { 
+    for (j in 1:dim(d2[[i]])[1]) { 
+    	allpoints[s,1] <- d2[[i]][j,1]
+    	allpoints[s,2] <- d2[[i]][j,2]
+	s <- s+1
+} }
+#
+# Writing results into a file indat.txt
+#
+write(t(allpoints), file="allpoints.txt", ncolumns=2)
+
+
+
+> library(rgdal)
+rakennukset <- readOGR("/Users/userA/Desktop/rakennukset_Helsinki_06_2012/rakennukset_Helsinki_wgs84", "rakennukset")
+# apu <- rakennukset[150:152,1:1]
+apu <- rakennukset[210:230,1:1]
+a2 <- apu@polygons
+b2 <- list(1:length(a2))
+for (i in 1:length(a2)) {b2[[i]] <- apu@polygons[[i]]@Polygons[[1]]@coords}
+c2 <- b2
+for (i in 1:length(apu)) {c2[[i]][,1] <- 6371000*b2[[i]][,1]*pi/180
+c2[[i]][,2] <- 6371000*log(tan(pi/4 + 0.5*b2[[i]][,2]*pi/180))
+}
+#
+#
+# NOTE: direction of unit vector changed
+#
+#
+s <- 1
+up <- 2*(lentot-length(c2))
+d2 <- list(1:up)
+for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]
+    for (j in 1:(veclen-1)) { 
+    	ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2)
+	npoints <- 2*floor(ulength)+1
+	uvecx <- (c2[[i]][j,1] - c2[[i]][j+1,1])
+	uvecy <- (c2[[i]][j,2] - c2[[i]][j+1,2])
+	apumatrix <- matrix(0,npoints+1,2)
+		  for (v in 0:npoints) {
+		      apumatrix[v+1,1] <- c2[[i]][j,1] - v*uvecx/(npoints+1)
+		      apumatrix[v+1,2] <- c2[[i]][j,2] - v*uvecy/(npoints+1)
+		      		       }
+		      d2[[s]] <- apumatrix
+		      s <- s+1
+		      d2[[s]] <- matrix((c2[[i]][j,1] + uvecx),(c2[[i]][j,2] + uvecy),nrow=1,ncol=2)
+		      s <- s+1
+} }
+#
+s <- 1; pcount <- 0*c(1:(lentot-length(c2))); for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:(veclen-1)) {ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2); npoints <- 2*floor(ulength) + 1; pcount[[s]] <- npoints; s <- s+1 } }
+#
+n <- sum(pcount+1) + (lentot-length(c2)) + 1000
+s <- 1
+allpoints <- matrix(0,n,2)
+for (i in 1:length(d2)) { 
+    for (j in 1:dim(d2[[i]])[1]) { 
+    	allpoints[s,1] <- d2[[i]][j,1]
+    	allpoints[s,2] <- d2[[i]][j,2]
+	s <- s+1
+} }
+#
+lentot <- 0; for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; lentot <- lentot + veclen }; xcom <- c(1:lentot); ycom <- c(1:lentot); s <- 1; for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:veclen) { xcom[[s]] <- c2[[i]][j,1]; ycom[[s]] <- c2[[i]][j,2]; s <- s+1} }; xmin <- min(xcom)-25; xmax <- max(xcom)+25; ymin <- min(ycom)-25; ymax <- max(ycom)+25
+inipx <- c2[[1]][1,1]; inipy <- c2[[1]][1,2]
+plot(inipx, inipy, xlab="x axis", ylab="y axis", main="my plot", xlim=c(xmin,xmax), ylim=c(ymin,ymax), pch=15, col="blue"); plot(allpoints[,1], allpoints[,2], xlab="x axis", ylab="y axis", main="my plot", xlim=c(xmin,xmax), ylim=c(ymin,ymax), pch=15, col="green")
+for (i in 1:length(apu)) {x <- c2[[i]][,1]; y <- c2[[i]][,2];
+polygon(x, y, xpd=NA, lty = 2, lwd = 2, border = "red")
+}
+#
+# Writing results into a file allpoints.txt
+#
+write(t(allpoints), file="allpoints.txt", ncolumns=2)
+
+
+
+
+
+
+Read in laser scanning data:
+****************************
+
+> laserdata = read.table("/Users/userA/ftra/mclone/L4133D1pieni.txt")  # read text file
+#
+# Extract two rows (no z-coordinate)
+laserdata2 <- laserdata[,1:2]
+min(laserdata2["V1"]); max(laserdata2["V1"]) # extracts min and max of column 1
+min(laserdata2["V2"]); max(laserdata2["V2"]) # extracts min and max of column 2
+#
+min(allpoints[1:15000,1]); max(allpoints[1:15000,1]) # extracts min and max of KSV data
+min(allpoints[1:15000,2]); max(allpoints[1:15000,2]) # extracts min and max of KSV 
+
+
+Overlay two plots:
+plot(inipx, inipy, xlab="x axis", ylab="y axis", main="my plot", xlim=c(xmin,xmax), ylim=c(ymin,ymax), pch=15, col="blue"); plot(allpoints[,1], allpoints[,2], xlab="x axis", ylab="y axis", main="my plot", xlim=c(xmin,xmax), ylim=c(ymin,ymax), pch=15, col="green"); par(new=TRUE); plot(laserdata2[,1], laserdata2[,2], xlab="x axis", ylab="y axis", main="my plot", pch=15, col="red")
+
+
+
+
+
+
+
+################################
+
+
+
+# add 1756500 to laserdata2[,2] or SUBTRACT 1756500 from allpoints[,2] 
+# add 2388500 to laserdata2[,1] or SUBTRACT 2388500 from allpoints[,1]
+# Choosing subtraction, which is faster (as allpoints is a smaller file):
+#
+allpoints2 <- allpoints; n <- dim(allpoints)[1]; for (i in 1:n) {
+allpoints2[i,1] <- allpoints[i,1] - 2388500
+allpoints2[i,2] <- allpoints[i,2] - 1756500
+}
+
+
+
+#
+allpoints3 <- subset(allpoints, allpoints[,2] > 8428000 & allpoints[,1] > 2774000)
+#
+allpoints2 <- allpoints3; n <- dim(allpoints3)[1]; for (i in 1:n) {
+allpoints2[i,1] <- allpoints3[i,1] - 2388481
+allpoints2[i,2] <- allpoints3[i,2] - 1756612
+}
+#
+plot(laserdata2[,1], laserdata2[,2], xlab="x axis", ylab="y axis", main="my plot", pch=15, col="green")
+points(allpoints2[,1], allpoints2[,2], col='red')
+#
+write(t(allpoints2), file="allpoints2.txt", ncolumns=2)
+
+
+
+#Stick with this attempt
+#and then look for scaling parameters in the file mainAffineTransf.py:
+#
+allpoints3 <- subset(allpoints, allpoints[,2] > 8428000 & allpoints[,1] > 2774000)
+#
+allpoints2 <- allpoints3; n <- dim(allpoints3)[1]; for (i in 1:n) {
+allpoints2[i,1] <- allpoints3[i,1] - 2388481
+# (2388482 = max(allpoints3[,1]) - max(laserdata2[,1]))
+#
+allpoints2[i,2] <- allpoints3[i,2] - 1756612
+# (1756612 = max(allpoints3[,2]) - max(laserdata2[,2]))
+# In other words, we match the maximum values of laserdata2 and allpoints2
+}
+#
+plot(laserdata2[,1], laserdata2[,2], xlab="x axis", ylab="y axis", main="my plot", pch=15, col="green")
+points(allpoints2[,1], allpoints2[,2], col='red')
+#
+write(t(allpoints2), file="allpoints2.txt", ncolumns=2)
+
+
+
+
+
+Determining building heights
+****************************
+
+> library(rgdal)
+rakennukset <- readOGR("/Users/userA/Desktop/rakennukset_Helsinki_06_2012/rakennukset_Helsinki_wgs84", "rakennukset")
+apu <- rakennukset[150:152,1:1]
+
+# the height of the building can be roughly read off from the variable I_KERRLM
+# (= kerrosten lukumÃ¤Ã¤rÃ¤)
+> apu@data$I_KERRLKM
+[1] 5 3 6
+is.vector(apu@data$I_KERRLKM)
+[1] TRUE
+
+
+
+# Try rearranging now part of the program given above
+#
+s <- 1; pcount <- 0*c(1:(lentot-length(c2))); for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:(veclen-1)) {ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2); npoints <- 2*floor(ulength) + 1; pcount[[s]] <- npoints; s <- s+1 } }
+#
+n <- sum(pcount+1) + (lentot-length(c2)) + 1000
+s <- 1
+#
+bcount <- vector(length = length(c2)+1); bcount[1] <- 0; for ( i in 2:(length(c2)+1) ) {bcount[i] <- bcount[i-1] + dim(c2[[i-1]])[1] - 1}
+#
+allpoints <- matrix(0,n,3)
+for (i in 1:length(d2)) { 
+    for (j in 1:dim(d2[[i]])[1]) { 
+    	allpoints[s,1] <- d2[[i]][j,1]
+    	allpoints[s,2] <- d2[[i]][j,2]
+	#
+	a <- min(which(i <= 2*bcount))  # a marks the position of a single
+	     		    		# building
+    	allpoints[s,3] <- apu@data$I_KERRLKM[a-1]
+	s <- s+1
+} }
+#
+# Writing results into a file allpoints3D.txt
+#
+write(t(allpoints), file="allpoints3D.txt", ncolumns=3)
+
+
+
+
+
+# Try with larger number of buildings
+> library(rgdal)
+rakennukset <- readOGR("/Users/userA/Desktop/rakennukset_Helsinki_06_2012/rakennukset_Helsinki_wgs84", "rakennukset")
+apu <- rakennukset[210:230,1:30]     # NOTE: range 1:30 necessary, not 1:1
+a2 <- apu@polygons
+b2 <- list(1:length(a2))
+for (i in 1:length(a2)) {b2[[i]] <- apu@polygons[[i]]@Polygons[[1]]@coords}
+c2 <- b2
+for (i in 1:length(apu)) {c2[[i]][,1] <- 6371000*b2[[i]][,1]*pi/180
+c2[[i]][,2] <- 6371000*log(tan(pi/4 + 0.5*b2[[i]][,2]*pi/180))
+}
+#
+#
+# NOTE: direction of unit vector changed
+#
+#
+s <- 1
+up <- 2*(lentot-length(c2))
+d2 <- list(1:up)
+for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]
+    for (j in 1:(veclen-1)) { 
+    	ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2)
+	npoints <- 2*floor(ulength)+1
+	uvecx <- (c2[[i]][j,1] - c2[[i]][j+1,1])
+	uvecy <- (c2[[i]][j,2] - c2[[i]][j+1,2])
+	apumatrix <- matrix(0,npoints+1,2)
+		  for (v in 0:npoints) {
+		      apumatrix[v+1,1] <- c2[[i]][j,1] - v*uvecx/(npoints+1)
+		      apumatrix[v+1,2] <- c2[[i]][j,2] - v*uvecy/(npoints+1)
+		      		       }
+		      d2[[s]] <- apumatrix
+		      s <- s+1
+		      d2[[s]] <- matrix((c2[[i]][j,1] + uvecx),(c2[[i]][j,2] + uvecy),nrow=1,ncol=2)
+		      s <- s+1
+} }
+#
+s <- 1; pcount <- 0*c(1:(lentot-length(c2))); for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:(veclen-1)) {ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2); npoints <- 2*floor(ulength) + 1; pcount[[s]] <- npoints; s <- s+1 } }
+#
+n <- sum(pcount+1) + (lentot-length(c2)) + 1000
+s <- 1
+allpoints <- matrix(0,n,2)
+for (i in 1:length(d2)) { 
+    for (j in 1:dim(d2[[i]])[1]) { 
+    	allpoints[s,1] <- d2[[i]][j,1]
+    	allpoints[s,2] <- d2[[i]][j,2]
+	s <- s+1
+} }
+#
+lentot <- 0; for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; lentot <- lentot + veclen }
+#
+## Try rearranging now part of the program given above
+#
+s <- 1; pcount <- 0*c(1:(lentot-length(c2))); for (i in 1:length(c2)) { veclen <- dim(c2[[i]])[1]; for (j in 1:(veclen-1)) {ulength <- sqrt((c2[[i]][j,1] - c2[[i]][j+1,1])^2 + (c2[[i]][j,2] - c2[[i]][j+1,2])^2); npoints <- 2*floor(ulength) + 1; pcount[[s]] <- npoints; s <- s+1 } }
+#
+n <- sum(pcount+1) + (lentot-length(c2)) + 1000
+s <- 1
+#
+bcount <- vector(length = length(c2)+1); bcount[1] <- 0; for ( i in 2:(length(c2)+1) ) {bcount[i] <- bcount[i-1] + dim(c2[[i-1]])[1] - 1}
+#
+allpoints <- matrix(0,n,3)
+for (i in 1:length(d2)) { 
+    for (j in 1:dim(d2[[i]])[1]) { 
+    	allpoints[s,1] <- d2[[i]][j,1]
+    	allpoints[s,2] <- d2[[i]][j,2]
+	#
+	a <- min(which(i <= 2*bcount))  # a marks the position of a single
+	     		    		# building
+    	allpoints[s,3] <- apu@data$I_KERRLKM[a-1]
+	s <- s+1
+} }
+#
+#
+allpoints3 <- subset(allpoints, allpoints[,2] > 8428000 & allpoints[,1] > 2774000)
+#
+allpoints2 <- allpoints3; n <- dim(allpoints3)[1]; for (i in 1:n) {
+allpoints2[i,1] <- allpoints3[i,1] - 2388481
+# (2388482 = max(allpoints3[,1]) - max(laserdata2[,1]))
+#
+allpoints2[i,2] <- allpoints3[i,2] - 1756612
+# (1756612 = max(allpoints3[,2]) - max(laserdata2[,2]))
+# In other words, we match the maximum values of laserdata2 and allpoints2
+}
+# Writing results into a file allpoints3D.txt
+#
+write(t(allpoints2), file="allpoints3D.txt", ncolumns=3)
+
+
